@@ -15,11 +15,11 @@ def _learn_key(key, value):
     memory[key].append(value)
 
 def learn(bigrams):
-
-
     for bigram in bigrams:
-        _learn_key(bigram[0], bigram[1])
-
+        if(len(bigram)>=10):
+           _learn_key(bigram[0], bigram[9])
+        else:
+           _learn_key(bigram[0], bigram[len(bigram)-1])
 
 tensor = []
 
@@ -36,7 +36,7 @@ troika = [item for sublist in troika for item in sublist]
 #print(troika)
 
 tensor = []
-with open('nonself1.csv', 'r') as csvfile:
+with open('normal_heavy.csv', 'r') as csvfile:
 
     csvreader = csv.reader(csvfile)
     next(csvreader)
@@ -56,8 +56,19 @@ for i in tensor:
     time.append(i[0])
     call.append(i[1])
 
+from collections import Counter
+Q = Counter(call).items()
 
-chunks = [ll[x:x+2] for x in range(0, len(ll), 2)]
+
+
+percentages = {x: (float(y) / len(call)) for x, y in Q}
+q = {}
+for name, pct in percentages.items():
+    q[name] = pct
+
+
+
+chunks = [ll[x:x+9] for x in range(0, len(ll), 10)]
 
 counter = {}
 for el in chunks:
@@ -71,23 +82,20 @@ for el in chunks:
 
 coll = ([(v,k) for (k,v) in counter.items()])
 tokens = call
-bigrams = [(tokens[i],tokens[i+1]) for i in range(0,len(tokens)-1)]
-
-#print(bigrams)
-
+bigrams = [(tokens[i],tokens[len(tokens)-1]) for i in range(0,len(tokens)-1)]
+tengrams = [call[i:i+10] for i in range(0, len(call), 10)]
+#print(tengrams)
 
 
 
 ###
-m = learn(bigrams)
+m = learn(tengrams)
 from collections import Counter
 
 
 new = {}
 for k,v in memory.items():
     c=Counter()
-    #print(k,v)
-    #print("\n")
     for letter in v:
         c[letter] += 1
     v = [(i, c[i] / len(v)) for i in c]
@@ -98,30 +106,22 @@ for k,v in memory.items():
 royal_probability = 0
 flag = 0
 flog = 0
-for i in bigrams:
+for i in tengrams:
     for k,v in new.items():
-
          if(i[0] in k):
-             #print("match")
              nucor = new[k]
              test = dict(nucor) 
-             print(test)
-
-
              if i[1] in test:
                   flag = 1 + flag
-
 print(flag/leng)
 
 #print(new)
-##########################################################################
+#####################################################################################################################################################
 ll1 = []
 tensor1= []
 time1 = []
 call1 = []
-
-with open('exploit2.csv', 'r') as csvfile1:
-
+with open('bader.csv', 'r') as csvfile1:
     csvreader1 = csv.reader(csvfile1)
     next(csvreader1)
     i = 0
@@ -132,34 +132,41 @@ with open('exploit2.csv', 'r') as csvfile1:
         row[1] = troika[index1]
         tensor1.append([i,row[1]])
         ll1.append(row[1])
-
-leng = i
 for i in tensor1:
     time1.append(i[0])
     call1.append(i[1])
-
-
-
-
+prob_seq = []
 tokens1 = call1
-bigrams1 = [(tokens1[i],tokens1[i+1]) for i in range(0,len(tokens1)-1)]
+tengrams1 = [call1[i:i+10] for i in range(0, len(call1), 10)]
 
-
+leng = len(tengrams1)
 royal_probability = 0
 flag = 0
 flog = 0
-for i in bigrams1:
-    for k,v in new.items():
 
-         if(i[0] in k):
-             #print("match")
-             nucor = new[k]
-             test = dict(nucor) 
+yankee_white = []
+for i in tengrams1:
+    product = 1
+    seq = []
+    probs = []
+    if(i[0] in q):
+         init = q[i[0]]
+    else:
+         init = 0
+    if(i[0] in new):
+       probs = dict(new[i[0]])
+       for k in range(1,len(i)-1):
+           if(i[k] in probs):
+               seq.append(probs[i[k]])
 
+           else:
+               seq.append(0)
+    for xx in seq:
+         product *= xx
+    yankee = product*init
 
+    #print(sum(seq))
+    yankee_white.append(yankee)
 
-             if i[1] in test:
-                  flag = 1 + flag
-
-print(flag/leng)
-
+print(sum(yankee_white)/leng)
+#print(yankee_white)
