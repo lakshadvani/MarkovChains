@@ -4,7 +4,7 @@ from operator import itemgetter
 import numpy as np
 import matplotlib.pyplot as plt
 import matplotlib.cbook as cbook
-print("markov")
+print("markov chain experiment")
 royal_probability = 0
 
 
