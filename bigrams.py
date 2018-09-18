@@ -5,7 +5,7 @@ import numpy as np
 import matplotlib.pyplot as plt
 import matplotlib.cbook as cbook
 print("markov chain experiment")
-royal_probability = 0
+royal_probability = 0.0
 
 
 memory = {}
