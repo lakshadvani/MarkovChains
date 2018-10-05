@@ -2,6 +2,10 @@
 #Lakad>>
 #
 #
+'''
+Hyperplane splitting vals
+
+'''
 from numpy import array
 import csv
 from operator import itemgetter
